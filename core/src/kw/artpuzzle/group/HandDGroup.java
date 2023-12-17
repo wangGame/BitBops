@@ -14,7 +14,6 @@ public class HandDGroup extends Group {
     private Image handDing;
     public HandDGroup(){
         setSize(750,855);
-        setDebug(true);
         handDing = new Image(Asset.getAsset().getTexture("handdingzi.png"));
         addActor(handDing);
         handDing.setPosition(getWidth()/2.0f,getHeight()/2.0f, Align.center);

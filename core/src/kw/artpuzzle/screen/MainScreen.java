@@ -27,26 +27,17 @@ import kw.artpuzzle.group.HandDGroup;
  */
 public class MainScreen extends BaseScreen {
     private Group groupView;
-    private float timeX;
     private float baseY;
     private float baseX;
     public MainScreen(BaseGame game) {
         super(game);
         baseX = -420;
         baseY = Constant.GAMEHIGHT/3.0f;
-        groupView = new Group(){
-            @Override
-            public void act(float delta) {
-                super.act(delta);
-                timeX += delta * 200;
-                groupView.setX(timeX);
-            }
-        };
+        groupView = new Group();
         groupView.setWidth(Constant.GAMEWIDTH);
         groupView.setHeight(400);
         stage.addActor(groupView);
         groupView.setY(Constant.GAMEHIGHT/3);
-        groupView.setDebug(true);
         Actor leftClickBtn = new Actor();
         leftClickBtn.setSize(Constant.GAMEWIDTH/2.0f,Constant.GAMEHIGHT);
         addActor(leftClickBtn);
@@ -66,9 +57,20 @@ public class MainScreen extends BaseScreen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                Image image = new Image(Asset.getAsset().getTexture("dingzi.png"));
+                Image image = new Image(Asset.getAsset().getTexture("dingzi.png")){
+                    private float timeX=0;
+                    @Override
+                    public void act(float delta) {
+                        super.act(delta);
+                        timeX += delta * 130;
+                        setX(timeX+130);
+                        if (getX()> Constant.GAMEWIDTH) {
+                            remove();
+                        }
+                    }
+                };
                 groupView.addActor(image);
-                image.setX(-Math.abs(timeX)+130);
+                image.setX(130);
                 array.add(image);
                 AudioProcess.playSound(AudioType.peng);
                 image.setVisible(false);
@@ -108,16 +110,17 @@ public class MainScreen extends BaseScreen {
                 chi.setRotation(-100);
                 chi.addAction(
                                 Actions.sequence(
-                                        Actions.rotateTo(0,0.1f),
+                                        Actions.rotateTo(0,0f),
                                         Actions.run(()->{
 //                                            Constant.GAMEWIDTH - 378
                                             AudioProcess.playSound(AudioType.pang);
+                                            System.out.println((Constant.GAMEWIDTH - 428) +"        "+(Constant.GAMEWIDTH - 428 + 120));
                                             for (Image image : array) {
                                                 Vector2 vector2 = new Vector2(image.getX(), 0);
-                                                image.getParent().localToStageCoordinates(vector2);
+                                                groupView.localToStageCoordinates(vector2);
                                                 System.out.println(vector2.x);
-                                                if (vector2.x > Constant.GAMEWIDTH - 398 && vector2.x < Constant.GAMEWIDTH - 378 + 80) {
-                                                    if (vector2.x < Constant.GAMEWIDTH - 378 + 10 + 10) {
+                                                if (vector2.x > Constant.GAMEWIDTH - 428 && vector2.x < Constant.GAMEWIDTH -428 + 120) {
+                                                    if (vector2.x < Constant.GAMEWIDTH - 428 + 20 + 10) {
 //                                                    left
                                                         float xx = image.getX(Align.right);
                                                         float yy = image.getY();
@@ -125,7 +128,7 @@ public class MainScreen extends BaseScreen {
                                                         ((TextureRegionDrawable)(image.getDrawable())).setRegion(region);
                                                         image.setSize(region.getRegionWidth(),region.getRegionHeight());
                                                         image.setX(xx,Align.right);
-                                                    } else if (vector2.x > Constant.GAMEWIDTH - 378 + 80 - 10) {
+                                                    } else if (vector2.x > Constant.GAMEWIDTH - 428 + 120 - 10) {
 //                                                    right
                                                         float xx = image.getX(Align.right);
                                                         TextureRegion region = new TextureRegion(Asset.getAsset().getTexture("right.png"));
