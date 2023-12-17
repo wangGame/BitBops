@@ -1,5 +1,6 @@
 package kw.artpuzzle.screen;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -37,7 +38,7 @@ public class MainScreen extends BaseScreen {
             @Override
             public void act(float delta) {
                 super.act(delta);
-                timeX += delta * 100;
+                timeX += delta * 200;
                 groupView.setX(timeX);
             }
         };
@@ -49,6 +50,12 @@ public class MainScreen extends BaseScreen {
         Actor leftClickBtn = new Actor();
         leftClickBtn.setSize(Constant.GAMEWIDTH/2.0f,Constant.GAMEHIGHT);
         addActor(leftClickBtn);
+
+        Image  bottom = new Image(Asset.getAsset().getTexture("white.png"));
+        addActor(bottom);
+        bottom.setColor(Color.BLACK);
+        bottom.setSize(Constant.GAMEWIDTH,Constant.GAMEHIGHT/2.0f);
+        bottom.setY(Constant.GAMEHIGHT/3.0f,Align.top);
 
         Array<Image> array = new Array<>();
         Actor rightClickBtn = new Actor();
@@ -101,14 +108,15 @@ public class MainScreen extends BaseScreen {
                 chi.setRotation(-100);
                 chi.addAction(
                                 Actions.sequence(
-                                        Actions.rotateTo(0,0.4f),
+                                        Actions.rotateTo(0,0.1f),
                                         Actions.run(()->{
 //                                            Constant.GAMEWIDTH - 378
                                             AudioProcess.playSound(AudioType.pang);
                                             for (Image image : array) {
                                                 Vector2 vector2 = new Vector2(image.getX(), 0);
                                                 image.getParent().localToStageCoordinates(vector2);
-                                                if (vector2.x > Constant.GAMEWIDTH - 378 + 10 && vector2.x < Constant.GAMEWIDTH - 378 + 80) {
+                                                System.out.println(vector2.x);
+                                                if (vector2.x > Constant.GAMEWIDTH - 398 && vector2.x < Constant.GAMEWIDTH - 378 + 80) {
                                                     if (vector2.x < Constant.GAMEWIDTH - 378 + 10 + 10) {
 //                                                    left
                                                         float xx = image.getX(Align.right);
@@ -133,7 +141,7 @@ public class MainScreen extends BaseScreen {
                                                 }
                                             }
                                         }),
-                                        Actions.rotateTo(-100,0.4f),
+                                        Actions.rotateTo(-100,0.1f),
                                         Actions.removeActor()
 
                         ));
