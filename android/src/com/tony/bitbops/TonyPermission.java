@@ -1,8 +1,6 @@
-package com.tony.puzzle;
+package com.tony.bitbops;
 
-import android.Manifest;
 import android.app.Activity;
-import android.os.Build;
 
 
 /**

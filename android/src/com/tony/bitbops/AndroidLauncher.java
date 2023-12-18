@@ -1,4 +1,4 @@
-package com.tony.puzzle;
+package com.tony.bitbops;
 
 import android.annotation.SuppressLint;
 import android.os.Build;
@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.kw.gdx.constant.Configuration;
@@ -84,6 +83,11 @@ public class AndroidLauncher extends BaseApplication{
         }
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
+    }
     @Override
     protected void onResume() {
         super.onResume();

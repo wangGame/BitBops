@@ -1,16 +1,15 @@
-package com.tony.puzzle;
+package com.tony.bitbops;
 
 import android.app.ActivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
 import androidx.multidex.MultiDex;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.kw.gdx.constant.Configuration;
-import java.util.Map;
+
 public class BaseApplication extends AndroidApplication {
     private static BaseApplication instance;
 

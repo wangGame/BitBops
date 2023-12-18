@@ -1,12 +1,7 @@
-package com.tony.puzzle;
+package com.tony.bitbops;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
-import com.tony.puzzle.desktopnet.DeskDownload;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
 import kw.artpuzzle.JigSawPuzzle;
 import kw.artpuzzle.listener.GameListener;

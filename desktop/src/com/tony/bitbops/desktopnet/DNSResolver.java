@@ -1,4 +1,4 @@
-package com.tony.puzzle.desktopnet;
+package com.tony.bitbops.desktopnet;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

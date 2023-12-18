@@ -1,4 +1,4 @@
-package com.tony.puzzle;
+package com.tony.bitbops;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -8,15 +8,10 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.widget.RemoteViews;
-
-import com.compat_app_25_4_0.NotificationCompat;
 
 //推送  更改图片
 public class MYReceiver extends BroadcastReceiver {

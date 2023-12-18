@@ -1,27 +1,15 @@
-package com.tony.puzzle.desktopnet;
+package com.tony.bitbops.desktopnet;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.Array;
 import com.kw.gdx.net.DownLoad;
 import com.kw.gdx.net.DownLoadListener;
-import com.kw.gdx.resource.csvanddata.demo.CsvUtils;
 import com.kw.gdx.utils.log.NLog;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
 
 public class DeskDownload extends DownLoad {
     NetJavaImpl3 downloadnet;

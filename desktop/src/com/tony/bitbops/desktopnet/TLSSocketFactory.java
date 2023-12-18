@@ -1,4 +1,4 @@
-package com.tony.puzzle.desktopnet;
+package com.tony.bitbops.desktopnet;
 
 import java.io.IOException;
 import java.net.InetAddress;

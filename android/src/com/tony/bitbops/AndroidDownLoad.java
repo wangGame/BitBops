@@ -1,4 +1,4 @@
-package com.tony.puzzle;
+package com.tony.bitbops;
 
 import android.app.Activity;
 
