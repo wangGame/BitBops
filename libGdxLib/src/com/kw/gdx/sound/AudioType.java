@@ -46,5 +46,5 @@ public interface AudioType {
 //    @AudioResource String OPENSHOP = "loop_5_0.ogg";
 //    @AudioResource String clickA = "audio/artpuzzle_click.ogg";
     @AudioResource String peng = "1.wav";
-    @AudioResource String pang = "2.wav";
+    @AudioResource String pang = "12.wav";
 }

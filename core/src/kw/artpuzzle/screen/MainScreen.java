@@ -1,6 +1,8 @@
 package kw.artpuzzle.screen;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -19,6 +21,7 @@ import com.kw.gdx.screen.BaseScreen;
 import com.kw.gdx.sound.AudioProcess;
 import com.kw.gdx.sound.AudioType;
 
+import kw.artpuzzle.group.DingZiGroup;
 import kw.artpuzzle.group.HandDGroup;
 
 /**
@@ -29,29 +32,50 @@ public class MainScreen extends BaseScreen {
     private Group groupView;
     private float baseY;
     private float baseX;
-    private  Array<Image> dingziPos;
+    private  Array<DingZiGroup> dingziPos;
     private int dingziNum = 0;
     private int countNum = 0;
 
     public MainScreen(BaseGame game) {
         super(game);
         baseX = -420;
-        baseY = Constant.GAMEHIGHT/3.0f;
-        groupView = new Group();
+        baseY = Constant.GAMEWIDTH/2.0f;
+        groupView = new Group(){
+            @Override
+            public void draw(Batch batch, float parentAlpha) {
+                batch.flush();
+                if (clipBegin(getX()+50,getY()+50,getWidth()-100,getHeight()-100)) {
+                    super.draw(batch, parentAlpha);
+                    batch.flush();
+                    clipEnd();
+                }
+            }
+        };
+        Image image = new Image(new NinePatch(
+                Asset.getAsset().getTexture("white.png"),4,4,4,4));
+        image.setSize(Constant.GAMEWIDTH,Constant.GAMEHIGHT);
+        groupView.addActor(image);
+        image.setColor(Color.SALMON);
+        image.setY(groupView.getHeight()/2.0f + 650,Align.top);
+        groupView.setDebug(true);
         groupView.setWidth(Constant.GAMEWIDTH);
-        groupView.setHeight(400);
+        groupView.setHeight(Constant.GAMEWIDTH);
         stage.addActor(groupView);
+        Image chuangzi = new Image(Asset.getAsset().getTexture("chuangzi.png"));
+        stage.addActor(chuangzi);
+        chuangzi.setOrigin(Align.center);
+        chuangzi.setScale(groupView.getWidth()/2048.0f);
         groupView.setY(Constant.GAMEHIGHT/3);
+        chuangzi.setPosition(groupView.getX(Align.center),groupView.getY(Align.center),Align.center);
+        chuangzi.setDebug(true);
         Actor leftClickBtn = new Actor();
         leftClickBtn.setSize(Constant.GAMEWIDTH/2.0f,Constant.GAMEHIGHT);
 //        addActor(leftClickBtn);
 
         Image  bottom = new Image(Asset.getAsset().getTexture("white.png"));
-        addActor(bottom);
+//        addActor(bottom);
         bottom.setColor(Color.BLACK);
         bottom.setSize(Constant.GAMEWIDTH,Constant.GAMEHIGHT/2.0f);
-        bottom.setY(Constant.GAMEHIGHT/3.0f,Align.top);
-
         dingziPos = new Array<>();
         Actor rightClickBtn = new Actor();
         rightClickBtn.setSize(Constant.GAMEWIDTH/2.f,Constant.GAMEHIGHT);
@@ -70,9 +94,8 @@ public class MainScreen extends BaseScreen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-
                 Image chi = new Image(Asset.getAsset().getTexture("chuizi.png"));
-                addActor(chi);
+                groupView.addActor(chi);
                 chi.setPosition(Constant.GAMEWIDTH,groupView.getY()+150,Align.right);
                 chi.setOrigin(Align.bottomRight);
                 chi.setRotation(-100);
@@ -83,28 +106,20 @@ public class MainScreen extends BaseScreen {
 //                                            Constant.GAMEWIDTH - 378
                                             AudioProcess.playSound(AudioType.pang);
                                             System.out.println((Constant.GAMEWIDTH - 428) +"        "+(Constant.GAMEWIDTH - 428 + 120));
-                                            for (Image image : dingziPos) {
+                                            for (DingZiGroup image : dingziPos) {
                                                 Vector2 vector2 = new Vector2(image.getX(), 0);
-                                                groupView.localToStageCoordinates(vector2);
                                                 System.out.println(vector2.x);
                                                 if (vector2.x > Constant.GAMEWIDTH - 428 && vector2.x < Constant.GAMEWIDTH -428 + 120) {
                                                     if (vector2.x < Constant.GAMEWIDTH - 428 + 20 + 10) {
 //                                                    left
-                                                        float xx = image.getX(Align.right);
-                                                        float yy = image.getY();
-                                                        TextureRegion region = new TextureRegion(Asset.getAsset().getTexture("left.png"));
-                                                        ((TextureRegionDrawable)(image.getDrawable())).setRegion(region);
-                                                        image.setSize(region.getRegionWidth(),region.getRegionHeight());
-                                                        image.setX(xx);
+                                                        image.setLeft();
+
                                                     } else if (vector2.x > Constant.GAMEWIDTH - 428 + 120 - 10) {
 //                                                    right
-                                                        float xx = image.getX(Align.left);
-                                                        TextureRegion region = new TextureRegion(Asset.getAsset().getTexture("right.png"));
-                                                        ((TextureRegionDrawable)(image.getDrawable())).setRegion(region);
-                                                        image.setSize(region.getRegionWidth(),region.getRegionHeight());
-                                                        image.setX(xx);
+                                                        image.setRight();
+
                                                     } else {
-                                                        image.setY(-100);
+                                                        image.setDown();
                                                     }
                                                     dingziPos.removeValue(image, false);
                                                 } else if (vector2.x > Constant.GAMEWIDTH - 378 + 80) {
@@ -120,6 +135,8 @@ public class MainScreen extends BaseScreen {
         });
 
         randomDingzi();
+        DingZiGroup dingZiGroup = new DingZiGroup();
+        addActor(dingZiGroup);
     }
 
     private void randomDingzi(){
@@ -147,7 +164,7 @@ public class MainScreen extends BaseScreen {
     }
 
     public void putD(){
-        Image image = new Image(Asset.getAsset().getTexture("dingzi.png")){
+        DingZiGroup image = new DingZiGroup(){
             private float timeX=0;
             @Override
             public void act(float delta) {
@@ -160,13 +177,14 @@ public class MainScreen extends BaseScreen {
             }
         };
         groupView.addActor(image);
-        image.setX(130);
+        image.setX(100);
+        image.setY(groupView.getHeight()/2.0f + 100,Align.bottom);
         dingziPos.add(image);
         AudioProcess.playSound(AudioType.peng);
         image.setVisible(false);
 
         HandDGroup group = new HandDGroup();
-        addActor(group);
+        groupView.addActor(group);
         group.setPosition(baseX-800,800+baseY);
         group.addAction(
 //                Actions.forever(
@@ -174,7 +192,7 @@ public class MainScreen extends BaseScreen {
                         Actions.run(()->{
                             group.hideDingz(true);
                         }),
-                        Actions.moveTo(baseX+0,baseY,0.2f),
+                        Actions.moveTo(baseX+0,baseY+100,0.2f),
                         Actions.run(()->{
                             group.hideDingz(false);
                             image.setVisible(true);
