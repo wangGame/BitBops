@@ -22,7 +22,6 @@ public class HandDGroup extends Group {
         addActor(hand);
         hand.setPosition(getWidth()/2.0f,getHeight()/2.0f,Align.center);
     }
-
     public void hideDingz(boolean is) {
         handDing.setVisible(is);
     }

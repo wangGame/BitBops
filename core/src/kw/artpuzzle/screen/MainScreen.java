@@ -29,6 +29,10 @@ public class MainScreen extends BaseScreen {
     private Group groupView;
     private float baseY;
     private float baseX;
+    private  Array<Image> dingziPos;
+    private int dingziNum = 0;
+    private int countNum = 0;
+
     public MainScreen(BaseGame game) {
         super(game);
         baseX = -420;
@@ -40,7 +44,7 @@ public class MainScreen extends BaseScreen {
         groupView.setY(Constant.GAMEHIGHT/3);
         Actor leftClickBtn = new Actor();
         leftClickBtn.setSize(Constant.GAMEWIDTH/2.0f,Constant.GAMEHIGHT);
-        addActor(leftClickBtn);
+//        addActor(leftClickBtn);
 
         Image  bottom = new Image(Asset.getAsset().getTexture("white.png"));
         addActor(bottom);
@@ -48,7 +52,7 @@ public class MainScreen extends BaseScreen {
         bottom.setSize(Constant.GAMEWIDTH,Constant.GAMEHIGHT/2.0f);
         bottom.setY(Constant.GAMEHIGHT/3.0f,Align.top);
 
-        Array<Image> array = new Array<>();
+        dingziPos = new Array<>();
         Actor rightClickBtn = new Actor();
         rightClickBtn.setSize(Constant.GAMEWIDTH/2.f,Constant.GAMEHIGHT);
         rightClickBtn.setX(Constant.GAMEWIDTH/2.f);
@@ -57,47 +61,11 @@ public class MainScreen extends BaseScreen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                Image image = new Image(Asset.getAsset().getTexture("dingzi.png")){
-                    private float timeX=0;
-                    @Override
-                    public void act(float delta) {
-                        super.act(delta);
-                        timeX += delta * 130;
-                        setX(timeX+130);
-                        if (getX()> Constant.GAMEWIDTH) {
-                            remove();
-                        }
-                    }
-                };
-                groupView.addActor(image);
-                image.setX(130);
-                array.add(image);
-                AudioProcess.playSound(AudioType.peng);
-                image.setVisible(false);
-
-                HandDGroup group = new HandDGroup();
-                addActor(group);
-                group.setPosition(baseX-800,800+baseY);
-                group.addAction(
-//                Actions.forever(
-                        Actions.sequence(
-                                Actions.run(()->{
-                                    group.hideDingz(true);
-                                }),
-                                Actions.moveTo(baseX+0,baseY,0.2f),
-                                Actions.run(()->{
-                                    group.hideDingz(false);
-                                    image.setVisible(true);
-                                }),
-                                Actions.moveTo(baseX-800,baseY+800,0.2f),
-                                Actions.removeActor())
-//        )
-                );
-
+//                dingziNum = (int) (1 + Math.random() * 4);
+//                countNum = 0;
+//                putDingZi();
             }
         });
-
-
         rightClickBtn.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -115,7 +83,7 @@ public class MainScreen extends BaseScreen {
 //                                            Constant.GAMEWIDTH - 378
                                             AudioProcess.playSound(AudioType.pang);
                                             System.out.println((Constant.GAMEWIDTH - 428) +"        "+(Constant.GAMEWIDTH - 428 + 120));
-                                            for (Image image : array) {
+                                            for (Image image : dingziPos) {
                                                 Vector2 vector2 = new Vector2(image.getX(), 0);
                                                 groupView.localToStageCoordinates(vector2);
                                                 System.out.println(vector2.x);
@@ -127,10 +95,10 @@ public class MainScreen extends BaseScreen {
                                                         TextureRegion region = new TextureRegion(Asset.getAsset().getTexture("left.png"));
                                                         ((TextureRegionDrawable)(image.getDrawable())).setRegion(region);
                                                         image.setSize(region.getRegionWidth(),region.getRegionHeight());
-                                                        image.setX(xx,Align.right);
+                                                        image.setX(xx);
                                                     } else if (vector2.x > Constant.GAMEWIDTH - 428 + 120 - 10) {
 //                                                    right
-                                                        float xx = image.getX(Align.right);
+                                                        float xx = image.getX(Align.left);
                                                         TextureRegion region = new TextureRegion(Asset.getAsset().getTexture("right.png"));
                                                         ((TextureRegionDrawable)(image.getDrawable())).setRegion(region);
                                                         image.setSize(region.getRegionWidth(),region.getRegionHeight());
@@ -138,9 +106,9 @@ public class MainScreen extends BaseScreen {
                                                     } else {
                                                         image.setY(-100);
                                                     }
-                                                    array.removeValue(image, false);
+                                                    dingziPos.removeValue(image, false);
                                                 } else if (vector2.x > Constant.GAMEWIDTH - 378 + 80) {
-                                                    array.removeValue(image, false);
+                                                    dingziPos.removeValue(image, false);
                                                 }
                                             }
                                         }),
@@ -150,9 +118,70 @@ public class MainScreen extends BaseScreen {
                         ));
             }
         });
+
+        randomDingzi();
     }
-    @Override
-    public void render(float delta) {
-        super.render(delta);
+
+    private void randomDingzi(){
+        dingziNum = (int) (1 + Math.random() * 4);
+        countNum = 0;
+        putDingZi();
+    }
+
+    private void putDingZi() {
+        float v = (float) (Math.random() * 5 * 0.1f + 0.4f);
+        if (countNum <= dingziNum) {
+            stage.addAction(Actions.sequence(
+                    Actions.delay(v),
+                    Actions.run(() -> {
+                        putD();
+                        putDingZi();
+                    })
+            ));
+        }else {
+            stage.addAction(Actions.delay(8,Actions.run(()->{
+                randomDingzi();
+            })));
+        }
+        countNum ++;
+    }
+
+    public void putD(){
+        Image image = new Image(Asset.getAsset().getTexture("dingzi.png")){
+            private float timeX=0;
+            @Override
+            public void act(float delta) {
+                super.act(delta);
+                timeX += delta * 130;
+                setX(timeX+130);
+                if (getX()> Constant.GAMEWIDTH) {
+                    remove();
+                }
+            }
+        };
+        groupView.addActor(image);
+        image.setX(130);
+        dingziPos.add(image);
+        AudioProcess.playSound(AudioType.peng);
+        image.setVisible(false);
+
+        HandDGroup group = new HandDGroup();
+        addActor(group);
+        group.setPosition(baseX-800,800+baseY);
+        group.addAction(
+//                Actions.forever(
+                Actions.sequence(
+                        Actions.run(()->{
+                            group.hideDingz(true);
+                        }),
+                        Actions.moveTo(baseX+0,baseY,0.2f),
+                        Actions.run(()->{
+                            group.hideDingz(false);
+                            image.setVisible(true);
+                        }),
+                        Actions.moveTo(baseX-800,baseY+800,0.2f),
+                        Actions.removeActor())
+//        )
+        );
     }
 }
