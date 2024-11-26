@@ -1,9 +1,7 @@
-package kw.artpuzzle.screen;
+package kw.bitbops.screen;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -11,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.kw.gdx.BaseGame;
@@ -21,8 +18,8 @@ import com.kw.gdx.screen.BaseScreen;
 import com.kw.gdx.sound.AudioProcess;
 import com.kw.gdx.sound.AudioType;
 
-import kw.artpuzzle.group.DingZiGroup;
-import kw.artpuzzle.group.HandDGroup;
+import kw.bitbops.group.DingZiGroup;
+import kw.bitbops.group.HandDGroup;
 
 /**
  * @Auther jian xian si qi
@@ -51,26 +48,19 @@ public class MainScreen extends BaseScreen {
                 }
             }
         };
-        Image image = new Image(new NinePatch(
-                Asset.getAsset().getTexture("white.png"),4,4,4,4));
-        image.setSize(Constant.GAMEWIDTH,Constant.GAMEHIGHT);
-        groupView.addActor(image);
-        image.setColor(Color.SALMON);
-        image.setY(groupView.getHeight()/2.0f + 650,Align.top);
-        groupView.setDebug(true);
         groupView.setWidth(Constant.GAMEWIDTH);
         groupView.setHeight(Constant.GAMEWIDTH);
+
         stage.addActor(groupView);
+
         Image chuangzi = new Image(Asset.getAsset().getTexture("chuangzi.png"));
         stage.addActor(chuangzi);
         chuangzi.setOrigin(Align.center);
         chuangzi.setScale(groupView.getWidth()/2048.0f);
         groupView.setY(Constant.GAMEHIGHT/3);
         chuangzi.setPosition(groupView.getX(Align.center),groupView.getY(Align.center),Align.center);
-        chuangzi.setDebug(true);
-        Actor leftClickBtn = new Actor();
-        leftClickBtn.setSize(Constant.GAMEWIDTH/2.0f,Constant.GAMEHIGHT);
-//        addActor(leftClickBtn);
+
+
 
         Image  bottom = new Image(Asset.getAsset().getTexture("white.png"));
 //        addActor(bottom);
@@ -81,13 +71,17 @@ public class MainScreen extends BaseScreen {
         rightClickBtn.setSize(Constant.GAMEWIDTH/2.f,Constant.GAMEHIGHT);
         rightClickBtn.setX(Constant.GAMEWIDTH/2.f);
         addActor(rightClickBtn);
+
+        Actor leftClickBtn = new Actor();
+        leftClickBtn.setSize(Constant.GAMEWIDTH/2.0f,Constant.GAMEHIGHT);
+        addActor(leftClickBtn);
         leftClickBtn.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-//                dingziNum = (int) (1 + Math.random() * 4);
-//                countNum = 0;
-//                putDingZi();
+                dingziNum = (int) (1 + Math.random() * 4);
+                countNum = 0;
+                putDingZi();
             }
         });
         rightClickBtn.addListener(new ClickListener(){
@@ -201,5 +195,44 @@ public class MainScreen extends BaseScreen {
                         Actions.removeActor())
 //        )
         );
+    }
+
+    public void hit(){
+        Image chi = new Image(Asset.getAsset().getTexture("chuizi.png"));
+        groupView.addActor(chi);
+        chi.setPosition(Constant.GAMEWIDTH,groupView.getY()+150,Align.right);
+        chi.setOrigin(Align.bottomRight);
+        chi.setRotation(-100);
+        chi.addAction(
+                Actions.sequence(
+                        Actions.rotateTo(0,0f),
+                        Actions.run(()->{
+//                                            Constant.GAMEWIDTH - 378
+                            AudioProcess.playSound(AudioType.pang);
+                            System.out.println((Constant.GAMEWIDTH - 428) +"        "+(Constant.GAMEWIDTH - 428 + 120));
+                            for (DingZiGroup image : dingziPos) {
+                                Vector2 vector2 = new Vector2(image.getX(), 0);
+                                System.out.println(vector2.x);
+                                if (vector2.x > Constant.GAMEWIDTH - 428 && vector2.x < Constant.GAMEWIDTH -428 + 120) {
+                                    if (vector2.x < Constant.GAMEWIDTH - 428 + 20 + 10) {
+//                                                    left
+                                        image.setLeft();
+
+                                    } else if (vector2.x > Constant.GAMEWIDTH - 428 + 120 - 10) {
+//                                                    right
+                                        image.setRight();
+
+                                    } else {
+                                        image.setDown();
+                                    }
+                                    dingziPos.removeValue(image, false);
+                                } else if (vector2.x > Constant.GAMEWIDTH - 378 + 80) {
+                                    dingziPos.removeValue(image, false);
+                                }
+                            }
+                        }),
+                        Actions.rotateTo(-100,0.1f),
+                        Actions.removeActor()
+                ));
     }
 }

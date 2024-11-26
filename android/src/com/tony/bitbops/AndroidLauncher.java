@@ -11,12 +11,12 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.kw.gdx.constant.Configuration;
 import com.kw.gdx.constant.Constant;
 
-import kw.artpuzzle.JigSawPuzzle;
-import kw.artpuzzle.listener.GameListener;
+import kw.bitbops.BitBopsGame;
+import kw.bitbops.listener.GameListener;
 
 public class AndroidLauncher extends BaseApplication{
     private Vibrator vibrator;
-    private JigSawPuzzle jigSawPuzzle;
+    private BitBopsGame jigSawPuzzle;
     public static boolean isDebug = false;
 
     @Override
@@ -42,7 +42,7 @@ public class AndroidLauncher extends BaseApplication{
         configuration.useWakelock = true;
         configuration.numSamples = 2;
         Constant.realseDebug = isDebug;
-        jigSawPuzzle = new JigSawPuzzle(new GameListener(){});
+        jigSawPuzzle = new BitBopsGame(new GameListener(){});
         initialize(jigSawPuzzle,configuration);
     }
 
@@ -87,18 +87,6 @@ public class AndroidLauncher extends BaseApplication{
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
 
-    }
-    @Override
-    protected void onResume() {
-        super.onResume();
-        initImmersiveMode();
-        NotificationUtil.cancelAll(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        NotificationUtil.add(this);
     }
 
     @Override

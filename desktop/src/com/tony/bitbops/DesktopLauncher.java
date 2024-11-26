@@ -3,8 +3,8 @@ package com.tony.bitbops;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
-import kw.artpuzzle.JigSawPuzzle;
-import kw.artpuzzle.listener.GameListener;
+import kw.bitbops.BitBopsGame;
+import kw.bitbops.listener.GameListener;
 
 public class DesktopLauncher {
     public static void main(String[] args) {
@@ -13,8 +13,7 @@ public class DesktopLauncher {
         config.y = 0;
         config.height = (int) (640*1.3f);
         config.width = (int) (360 * 1.3f);
-        new LwjglApplication(new JigSawPuzzle(
-                new GameListener() {
-                 }),config);
+        new LwjglApplication(new BitBopsGame(
+                new GameListener() {}),config);
     }
 }
